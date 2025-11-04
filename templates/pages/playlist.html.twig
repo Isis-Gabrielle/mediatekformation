@@ -12,6 +12,9 @@
             <br /><br />
             <strong>description :</strong><br />
                 {{ playlist.description|nl2br }}
+                <br /><br />
+                <strong>nombre de formations: </strong>
+                {{ nombreformation }}
         </div>
         <div class="col">
             <!-- boucle sur l'affichage des formations -->
@@ -28,7 +31,7 @@
                         <a href="{{ path('formations.showone', {id:formation.id}) }}" 
                            class="link-secondary text-decoration-none">
                             {{ formation.title }}
-                        </a>          
+                        </a>   
                     </div>
                 </div>
             {% endfor %}

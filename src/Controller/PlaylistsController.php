@@ -43,6 +43,15 @@ class PlaylistsController extends AbstractController {
         $this->formationRepository = $formationRepository;
     }
     
+    private function nbformations ($playlists): array {
+        $nombreformations = [];
+                foreach($playlists as $playlist){
+                    $playlistId = $playlist->getId();
+                    $formations = $this->formationRepository->findAllForOnePlaylist($playlistId);
+                    $nombreformations[$playlistId] = count($formations);
+                }
+        return $nombreformations;
+    }
     
     /**
      * @Route("/playlists", name="playlists")
@@ -52,9 +61,11 @@ class PlaylistsController extends AbstractController {
     public function index(): Response{
         $playlists = $this->playlistRepository->findAllOrderByName('ASC');
         $categories = $this->categorieRepository->findAll();
+        $nombreformations = $this->nbformations($playlists);
         return $this->render(self::LINKPLAYLIST, [
             'playlists' => $playlists,
-            'categories' => $categories            
+            'categories' => $categories,
+            'nombreformation' => $nombreformations
         ]);
     }
 
@@ -64,13 +75,18 @@ class PlaylistsController extends AbstractController {
             case "name":
                 $playlists = $this->playlistRepository->findAllOrderByName($ordre);
                 break;
+            case "nombreformation":
+                $playlists = $this->playlistRepository->findAllOrderByNumberFormations($ordre);         
+                break;
             default:
-                $playlists = $this->playlistRepository->findAll();
+                $playlists = $this->playlistRepository->findAll();              
         }
+        $nombreformations = $this->nbformations($playlists);
         $categories = $this->categorieRepository->findAll();
         return $this->render(self::LINKPLAYLIST, [
             'playlists' => $playlists,
-            'categories' => $categories                       
+            'categories' => $categories,
+            'nombreformation' => $nombreformations
         ]);
     }          
 
@@ -79,11 +95,13 @@ class PlaylistsController extends AbstractController {
         $valeur = $request->get("recherche");
         $playlists = $this->playlistRepository->findByContainValue($champ, $valeur, $table);
         $categories = $this->categorieRepository->findAll();
+        $nombreformations = $this->nbformations($playlists);
         return $this->render(self::LINKPLAYLIST, [
             'playlists' => $playlists,
             'categories' => $categories,            
             'valeur' => $valeur,
-            'table' => $table
+            'table' => $table,
+            'nombreformation' => $nombreformations
         ]);
     }  
 
@@ -95,7 +113,8 @@ class PlaylistsController extends AbstractController {
         return $this->render("pages/playlist.html.twig", [
             'playlist' => $playlist,
             'playlistcategories' => $playlistCategories,
-            'playlistformations' => $playlistFormations
+            'playlistformations' => $playlistFormations,
+            'nombreformation' => count($playlistFormations)
         ]);        
     }       
     
