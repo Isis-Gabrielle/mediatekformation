@@ -63,13 +63,13 @@ class AdminFormationsController extends AbstractController{
     }
     
     #[Route('/admin/suppr/{id}', name: 'admin.formation.delete')]
-    public function suppr(int $id): Response{
+    public function delete(int $id): Response{
         $formation = $this->formationRepository->find($id);
         $this->formationRepository->remove($formation);
         return $this->redirectToRoute('admin.formations');
     }
 
-#[Route('admin/formation/adminformations/tri/{champ}/{ordre}/{table}', name: 'admin.formations.sort')]
+#[Route('admin/formation/tri/{champ}/{ordre}/{table}', name: 'admin.formations.sort')]
     public function sort($champ, $ordre, $table=""): Response{
         $formations = $this->formationRepository->findAllOrderBy($champ, $ordre, $table);
         $categories = $this->categorieRepository->findAll();
@@ -79,7 +79,7 @@ class AdminFormationsController extends AbstractController{
         ]);
     }     
     
-     #[Route('admin/formation/formations/recherche/{champ}/{table}', name: 'admin.formations.findallcontain')]
+     #[Route('admin/formation/recherche/{champ}/{table}', name: 'admin.formations.findallcontain')]
     public function findAllContain($champ, Request $request, $table=""): Response{
         $valeur = $request->get("recherche");
         $formations = $this->formationRepository->findByContainValue($champ, $valeur, $table);

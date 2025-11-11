@@ -1,14 +1,14 @@
-{% extends "basefront.html.twig" %}
+{% extends "baseadmin.html.twig" %}
 {% block body %}
     <table aria-label="liste des playlists" class="table table-striped">
         <thead>
             <tr>
                 <th class="text-left align-top" scope="col">
                     playlist<br />
-                    <a href="{{ path('playlists.sort', {champ:'name', ordre:'ASC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true"><</a>
-                    <a href="{{ path('playlists.sort', {champ:'name', ordre:'DESC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true">></a>
+                    <a href="{{ path('admin.playlists.sort', {champ:'name', ordre:'ASC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true"><</a>
+                    <a href="{{ path('admin.playlists.sort', {champ:'name', ordre:'DESC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true">></a>
                     <br />
-                    <form class="form-inline mt-1" method="POST" action="{{ path('playlists.findallcontain', {champ:'name'}) }}">
+                    <form class="form-inline mt-1" method="POST" action="{{ path('admin.playlists.findallcontain', {champ:'name'}) }}">
                         <div class="form-group mr-1 mb-2">
                             <input type="text" class="sm" name="recherche" 
                                    value="{% if valeur|default and not table|default %}{{ valeur }}{% endif %}">
@@ -19,7 +19,7 @@
                 </th>
                 <th class="text-left align-top" scope="col">
                     catégories
-                    <form class="form-inline mt-1" method="POST" action="{{ path('playlists.findallcontain', {champ:'id', table:'categories'}) }}">
+                    <form class="form-inline mt-1" method="POST" action="{{ path('admin.playlists.findallcontain', {champ:'id', table:'categories'}) }}">
                         <select class="form-select form-select-sm" name="recherche" id="recherche" onchange="this.form.submit();">
                             <option value=""></option>
                             {% for categorie in categories %}
@@ -33,13 +33,13 @@
                         </select>                    
                     </form>            
                 </th>
-                
-                <th class="text-center align-top" scope="col">
-                    &nbsp;
-                </th>	
+
                 <th class="text-right align-top" scope="col">nombre de formations<br />
-                    <a href="{{ path('playlists.sort', {champ:'nombreformation', ordre:'ASC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true"><</a>
-                    <a href="{{ path('playlists.sort', {champ:'nombreformation', ordre:'DESC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true">></a></th>
+                    <a href="{{ path('admin.playlists.sort', {champ:'nombreformation', ordre:'ASC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true"><</a>
+                    <a href="{{ path('admin.playlists.sort', {champ:'nombreformation', ordre:'DESC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true">></a></th>
+                <th class="text-left align-middle" scope="col">
+                    <a href="{{ path('admin.playlist.add') }}" class="btn btn-info " >Ajouter une playlist</a>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -62,12 +62,14 @@
                         </td>
                         <td class="text-left">
                             {{ nombreformation[playlists[k].id] }}
-                        </td>    
-               
-                        <td class="text-center">
-                            <a href="{{ path('playlists.showone', {id:playlists[k].id}) }}" class="btn btn-secondary">Voir détail</a>
-                        </td> 					
+                        </td>  
+                        <td class="text-center"><a href="{{ path('admin.playlist.edit', {id:playlists[k].id}) }}" class="btn btn-secondary" >Edition</a></td>
+                        <td><a href="{{ path('admin.playlist.delete', {id:playlists[k].id}) }}" class="btn btn-danger" 
+                           onclick="return confirm('êtes-vous certain de supprimer {{playlists[k].name}} ?')">Suppression</a> 
+                        </td>
+                        				
                     </tr>
+
                 {% endfor %}	
             {% endif %}
         </tbody>

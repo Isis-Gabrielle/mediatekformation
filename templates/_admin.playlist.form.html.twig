@@ -1,0 +1,15 @@
+
+{% block body %}
+    <br>
+    {{ form_start(formPlaylist) }}
+            <div class="col">
+                <div class="row">
+                    {{ form_row(formPlaylist.name) }}
+                </div>
+                <div class="row">
+                    {{ form_row(formPlaylist.description) }}
+                </div>
+    </div>
+    {{ form_end(formPlaylist) }}
+{% endblock %}
+

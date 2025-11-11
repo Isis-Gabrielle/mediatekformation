@@ -42,10 +42,10 @@ class FormationType extends AbstractType
                 'multiple' => false,
                 'required' => true
                 ])
-            ->add('videoFile', FileType::class,
+            ->add('videoId', TextType::class,
             [
                 'required' => false,
-                'label' => 'Sélection de la vidéo'
+                'label' => 'ID Youtube de la vidéo'
             ])
             ->add('submit', SubmitType::class,['label' => 'Enregistrer']);
     }

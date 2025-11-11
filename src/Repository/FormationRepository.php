@@ -28,8 +28,8 @@ class FormationRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
     }
-    private $allowedChamp = ['title', 'publishedAt', 'name'];
-    private $allowedOrdre = ['ASC', 'DESC'];
+    public $allowedChamp = ['title', 'publishedAt', 'name', 'nombreformation', 'id'];
+    public $allowedOrdre = ['ASC', 'DESC'];
 
     /**
      * Retourne toutes les formations triées sur un champ
@@ -40,11 +40,11 @@ class FormationRepository extends ServiceEntityRepository
      */
     public function findAllOrderBy($champ, $ordre, $table=""): array{
         
-        if (!in_array($champ, $this->$allowedChamp)) {
+        if (!in_array($champ, $this->allowedChamp)) {
     throw new \InvalidArgumentException("Champ non valide.");
 }
 
-if (!in_array($ordre, $this->$allowedOrdre)) {
+if (!in_array($ordre, $this->allowedOrdre)) {
 throw new \InvalidArgumentException("Ordre non valide.");}
     
         if($table==""){
@@ -73,13 +73,9 @@ throw new \InvalidArgumentException("Ordre non valide.");}
      */
     public function findByContainValue($champ, $valeur, $table=""): array{
         
-    if (!in_array($champ, $this->$allowedChamp)) {
+    if (!in_array($champ, $this->allowedChamp)) {
     throw new \InvalidArgumentException("Champ non valide.");
 }
-
-if (!in_array($ordre, $this->$allowedOrdre)) {
-throw new \InvalidArgumentException("Ordre non valide.");}
-
         if($valeur==""){
             return $this->findAll();
         }

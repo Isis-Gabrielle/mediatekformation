@@ -27,7 +27,8 @@ class PlaylistRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
     }
-    
+    public $allowedChamp = ['title', 'publishedAt', 'name', 'nombreformation', 'id'];
+    public $allowedOrdre = ['ASC', 'DESC'];
     /**
      * Retourne toutes les playlists triées sur le nom de la playlist
      * @param type $champ
@@ -35,6 +36,8 @@ class PlaylistRepository extends ServiceEntityRepository
      * @return Playlist[]
      */
     public function findAllOrderByName($ordre): array{
+    if (!in_array($ordre, $this->allowedOrdre)) {
+    throw new \InvalidArgumentException("Ordre non valide.");}
         return $this->createQueryBuilder('p')
                 ->leftjoin('p.formations', 'f')
                 ->groupBy('p.id')
@@ -44,6 +47,8 @@ class PlaylistRepository extends ServiceEntityRepository
     } 
     
     public function findAllOrderByNumberFormations($ordre): array{
+if (!in_array($ordre, $this->allowedOrdre)) {
+throw new \InvalidArgumentException("Ordre non valide.");}
         return $this->createQueryBuilder('p')
                 ->leftjoin('p.formations', 'f')
                 ->addSelect('COUNT(f) AS HIDDEN nombreformations')
@@ -62,6 +67,10 @@ class PlaylistRepository extends ServiceEntityRepository
      * @return Playlist[]
      */
     public function findByContainValue($champ, $valeur, $table=""): array{
+         if (!in_array($champ, $this->allowedChamp)) {
+    throw new \InvalidArgumentException("Champ non valide.");
+}
+
         if($valeur==""){
             return $this->findAllOrderByName('ASC');
         }    
