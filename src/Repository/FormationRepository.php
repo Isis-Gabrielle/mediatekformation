@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class FormationRepository extends ServiceEntityRepository
 {
+    
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Formation::class);
@@ -27,6 +28,8 @@ class FormationRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
     }
+    private $allowedChamp = ['title', 'publishedAt', 'name'];
+    private $allowedOrdre = ['ASC', 'DESC'];
 
     /**
      * Retourne toutes les formations triées sur un champ
@@ -36,6 +39,14 @@ class FormationRepository extends ServiceEntityRepository
      * @return Formation[]
      */
     public function findAllOrderBy($champ, $ordre, $table=""): array{
+        
+        if (!in_array($champ, $this->$allowedChamp)) {
+    throw new \InvalidArgumentException("Champ non valide.");
+}
+
+if (!in_array($ordre, $this->$allowedOrdre)) {
+throw new \InvalidArgumentException("Ordre non valide.");}
+    
         if($table==""){
             return $this->createQueryBuilder('f')
                     ->orderBy('f.'.$champ, $ordre)
@@ -49,6 +60,8 @@ class FormationRepository extends ServiceEntityRepository
                     ->getResult();            
         }
     }
+    
+        
 
     /**
      * Enregistrements dont un champ contient une valeur
@@ -59,6 +72,14 @@ class FormationRepository extends ServiceEntityRepository
      * @return Formation[]
      */
     public function findByContainValue($champ, $valeur, $table=""): array{
+        
+    if (!in_array($champ, $this->$allowedChamp)) {
+    throw new \InvalidArgumentException("Champ non valide.");
+}
+
+if (!in_array($ordre, $this->$allowedOrdre)) {
+throw new \InvalidArgumentException("Ordre non valide.");}
+
         if($valeur==""){
             return $this->findAll();
         }
@@ -99,6 +120,7 @@ class FormationRepository extends ServiceEntityRepository
      * @return array
      */
     public function findAllForOnePlaylist($idPlaylist): array{
+        
         return $this->createQueryBuilder('f')
                 ->join('f.playlist', 'p')
                 ->where('p.id=:id')

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FormationRepository::class)]
 class Formation
@@ -23,6 +24,7 @@ class Formation
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Assert\LessThanOrEqual("now", message: "La date ne peut pas être au-delà d'aujourd'hui.")]
     private ?\DateTimeInterface $publishedAt = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -96,16 +98,27 @@ class Formation
         return $this;
     }
 
+    #[Vich\UploadableField(mapping: 'formations', fileNameProperty: 'videoId')]
+    
+    private ?File $videoFile = null;
+    
     public function getVideoId(): ?string
     {
         return $this->videoId;
     }
 
-    public function setVideoId(?string $videoId): static
+    public function setVideoId(?string $videoId): file
     {
         $this->videoId = $videoId;
 
         return $this;
+    }
+
+    public function getvideoFile(): ?File {
+        return $this->videoFile;
+    }
+    public function setvideoFile(): ?File {
+        return $this->videoFile;
     }
 
     public function getMiniature(): ?string
