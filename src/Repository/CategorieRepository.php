@@ -42,6 +42,7 @@ class CategorieRepository extends ServiceEntityRepository
                 ->orderBy('c.name', 'ASC')   
                 ->getQuery()
                 ->getResult();        
-    }  
+    } 
+    
     
 }

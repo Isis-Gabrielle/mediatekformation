@@ -1,0 +1,33 @@
+{% extends "baseadmin.html.twig" %}
+{% block body %}
+    <table aria-label="liste des catégories" class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    {{ form_start(formCategorie) }}
+                    <div class="col">
+                        <div class="row">
+                            {{ form_row(formCategorie.name) }}
+                        </div>
+                    </div>
+                    {{ form_end(formCategorie)}}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categorie in categories %}
+                <tr class="align-middle">
+                    <td>
+                        <h5 class="text-info">
+                            {{ categorie.name }}<br />
+                        </h5>
+                    </td>
+                    <td>
+                        <a href="{{ path('admin.categorie.delete', {id:categorie.id}) }}" class="btn btn-danger" 
+                           onclick="return confirm('êtes-vous certain de supprimer {{categorie.name}} ?')">Suppression</a> 
+                    </td>
+                </tr>  
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -47,7 +47,9 @@ class FormationType extends AbstractType
                 'required' => false,
                 'label' => 'ID Youtube de la vidéo'
             ])
-            ->add('submit', SubmitType::class,['label' => 'Enregistrer']);
+            ->add('submit', SubmitType::class,
+                    ['label' => 'Enregistrer',
+                        'attr' => ['class' => 'btn btn-info']]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
