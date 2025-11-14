@@ -17,8 +17,13 @@
                     </li>      
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('admin.categories') }}">Catégories</a>
-                    </li>   
+                    </li>      
                 </ul>
+                    <div class="container text-end">
+            {% if app.user %}
+                <a class="btn btn-info"href="{{ path('logout') }}">Se déconnecter</a>
+            {% endif %}
+                        </div>
             </div>
         </nav>        
     </div>
