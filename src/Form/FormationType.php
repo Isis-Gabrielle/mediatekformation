@@ -15,45 +15,63 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FormationType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
+/**
+ * Formulaire de gestion d'une formation.
+ * 
+ * @author emds
+ */
+class FormationType extends AbstractType {
+
+    /**
+     * Construction du formulaire.
+     *
+     * @param FormBuilderInterface $builder L'objet FormBuilder
+     * @param array $options Options du formulaire
+     * 
+     * @return void
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void {
         $builder
-            ->add('publishedAt', DateType::class, ['widget' => 'single_text',
-                'data' => isset($options['data']) &&
-                $options['data']->getPublishedAt() != null ? $options['data']->getPublishedAt() : new DateTime('now'),
-                'label' => 'Date'])
-            ->add('title', TextType::class, [
-    'label' => 'Titre'
-])
-            ->add('description')
-            ->add('categories', EntityType::class, [
-                'class' => Categorie::class,
-                'choice_label' => 'name',
-                'multiple' => true,
-                'required' => false,
-                'expanded' => true,
-                'label' => 'Catégories'
+                ->add('publishedAt', DateType::class, ['widget' => 'single_text',
+                    'data' => isset($options['data']) &&
+                    $options['data']->getPublishedAt() != null ? $options['data']->getPublishedAt() : new DateTime('now'),
+                    'label' => 'Date'])
+                ->add('title', TextType::class, [
+                    'label' => 'Titre'
+                ])
+                ->add('description')
+                ->add('categories', EntityType::class, [
+                    'class' => Categorie::class,
+                    'choice_label' => 'name',
+                    'multiple' => true,
+                    'required' => false,
+                    'expanded' => true,
+                    'label' => 'Catégories'
                 ])
                 ->add('playlist', EntityType::class, [
-                'class' => Playlist::class,
-                'choice_label' => 'name',
-                'multiple' => false,
-                'required' => true
+                    'class' => Playlist::class,
+                    'choice_label' => 'name',
+                    'multiple' => false,
+                    'required' => true
                 ])
-            ->add('videoId', TextType::class,
-            [
-                'required' => false,
-                'label' => 'ID Youtube de la vidéo'
-            ])
-            ->add('submit', SubmitType::class,
-                    ['label' => 'Enregistrer',
-                        'attr' => ['class' => 'btn btn-info']]);
+                ->add('videoId', TextType::class,
+                        [
+                            'required' => false,
+                            'label' => 'ID Youtube de la vidéo'
+                        ])
+                ->add('submit', SubmitType::class,
+                        ['label' => 'Enregistrer',
+                            'attr' => ['class' => 'btn btn-info']]);
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
+    /**
+     * Configuration des options du formulaire.
+     *
+     * @param OptionsResolver $resolver L'objet OptionsResolver
+     * 
+     * @return void
+     */
+    public function configureOptions(OptionsResolver $resolver): void {
         $resolver->setDefaults([
             'data_class' => Formation::class,
         ]);

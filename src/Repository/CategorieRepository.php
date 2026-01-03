@@ -7,10 +7,14 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Repository pour gérer les entités Categorie
+ * 
  * @extends ServiceEntityRepository<Categorie>
  */
 class CategorieRepository extends ServiceEntityRepository
-{
+{    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Categorie::class);

@@ -8,17 +8,29 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Entité représentant une playlist
+ */
 #[ORM\Entity(repositoryClass: PlaylistRepository::class)]
-class Playlist
-{
+class Playlist {
+
+    /**
+     * Identifiant unique de la playlist
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * Nom de la playlist
+     */
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $name = null;
 
+    /**
+     * Description de la playlist
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
@@ -28,35 +40,51 @@ class Playlist
     #[ORM\OneToMany(targetEntity: Formation::class, mappedBy: 'playlist')]
     private Collection $formations;
 
-    public function __construct()
-    {
+    /**
+     * Initialise la collection de formations
+     */
+    public function __construct() {
         $this->formations = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int {
         return $this->id;
     }
 
-    public function getName(): ?string
-    {
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string {
         return $this->name;
     }
 
-    public function setName(?string $name): static
-    {
+    /**
+     * @param string|null $name Nom de la playlist
+     *
+     * @return static
+     */
+    public function setName(?string $name): static {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getDescription(): ?string
-    {
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string {
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
-    {
+    /**
+     * @param string|null $description Description de la playlist
+     *
+     * @return static
+     */
+    public function setDescription(?string $description): static {
         $this->description = $description;
 
         return $this;
@@ -65,13 +93,18 @@ class Playlist
     /**
      * @return Collection<int, Formation>
      */
-    public function getFormations(): Collection
-    {
+    public function getFormations(): Collection {
         return $this->formations;
     }
-
-    public function addFormation(Formation $formation): static
-    {
+    
+    /**
+     * Associe une formation à la playlist
+     *
+     * @param Formation $formation
+     *
+     * @return static
+     */
+    public function addFormation(Formation $formation): static {
         if (!$this->formations->contains($formation)) {
             $this->formations->add($formation);
             $formation->setPlaylist($this);
@@ -79,12 +112,18 @@ class Playlist
 
         return $this;
     }
-
-    public function removeFormation(Formation $formation): static
-    {
+    
+    /**
+     * Supprime l’association entre une formation et la playlist
+     *
+     * @param Formation $formation
+     *
+     * @return static
+     */
+    public function removeFormation(Formation $formation): static {
         if ($this->formations->removeElement($formation) && $formation->getPlaylist() === $this) {
             // set the owning side to null (unless already changed)
-                $formation->setPlaylist(null);
+            $formation->setPlaylist(null);
         }
 
         return $this;
@@ -93,13 +132,12 @@ class Playlist
     /**
      * @return Collection<int, string>
      */
-    public function getCategoriesPlaylist() : Collection
-    {
+    public function getCategoriesPlaylist(): Collection {
         $categories = new ArrayCollection();
-        foreach($this->formations as $formation){
+        foreach ($this->formations as $formation) {
             $categoriesFormation = $formation->getCategories();
-            foreach($categoriesFormation as $categorieFormation){
-                if(!$categories->contains($categorieFormation->getName())){
+            foreach ($categoriesFormation as $categorieFormation) {
+                if (!$categories->contains($categorieFormation->getName())) {
                     $categories[] = $categorieFormation->getName();
                 }
             }

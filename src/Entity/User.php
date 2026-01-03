@@ -7,15 +7,24 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Entité représentant un utilisateur
+ */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    /**
+     * Identifiant unique de l’utilisateur
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    
+     /**
+     * Mail de l’utilisateur
+     */
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
@@ -29,17 +38,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private array $roles = [];
-
+    
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
-
+    
+    /**
+     * @return string|null
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
-
+    
+    /**
+     * @param string $email mail
+     *
+     * @return static
+     */
     public function setEmail(string $email): static
     {
         $this->email = $email;
@@ -86,7 +106,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->password;
     }
-
+    
+    /**
+     * @param string $password Mot de passe
+     *
+     * @return static
+     */
     public function setPassword(string $password): static
     {
         $this->password = $password;

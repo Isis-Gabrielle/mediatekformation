@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Repository\CategorieRepository;
@@ -10,112 +11,151 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Description of PlaylistsController
+ * Controleur des playlists
  *
  * @author emds
  */
 class PlaylistsController extends AbstractController {
-    
+
+    /**
+     * Chemin du template des playlists.
+     */
     private const LINKPLAYLIST = 'pages/playlists.html.twig';
+
     /**
      * 
      * @var PlaylistRepository
      */
     private $playlistRepository;
-    
+
     /**
      * 
      * @var FormationRepository
      */
     private $formationRepository;
-    
+
     /**
      * 
      * @var CategorieRepository
      */
-    private $categorieRepository;    
-    
-    public function __construct(PlaylistRepository $playlistRepository, 
+    private $categorieRepository;
+
+    /**
+     * @params PlaylistRepository $playlistRepository
+     * @params FormationRepository $formationRepository
+     * @params CategorieRepository $categorieRepository
+     */
+    public function __construct(PlaylistRepository $playlistRepository,
             CategorieRepository $categorieRepository,
             FormationRepository $formationRepository) {
         $this->playlistRepository = $playlistRepository;
         $this->categorieRepository = $categorieRepository;
         $this->formationRepository = $formationRepository;
     }
-    
-    private function nbformations ($playlists): array {
+
+    /**
+     * Calcule le nombre de formations par playlist
+     *
+     * @param iterable $playlists Liste des playlists
+     *
+     * @return array Tableau [idPlaylist => nombreDeFormations]
+     */
+    private function nbformations($playlists): array {
         $nombreformations = [];
-                foreach($playlists as $playlist){
-                    $playlistId = $playlist->getId();
-                    $formations = $this->formationRepository->findAllForOnePlaylist($playlistId);
-                    $nombreformations[$playlistId] = count($formations);
-                }
+        foreach ($playlists as $playlist) {
+            $playlistId = $playlist->getId();
+            $formations = $this->formationRepository->findAllForOnePlaylist($playlistId);
+            $nombreformations[$playlistId] = count($formations);
+        }
         return $nombreformations;
     }
-    
+
     /**
-     * @Route("/playlists", name="playlists")
+     * Affiche la liste des playlists
+     *
      * @return Response
      */
     #[Route('/playlists', name: 'playlists')]
-    public function index(): Response{
+    public function index(): Response {
         $playlists = $this->playlistRepository->findAllOrderByName('ASC');
         $categories = $this->categorieRepository->findAll();
         $nombreformations = $this->nbformations($playlists);
         return $this->render(self::LINKPLAYLIST, [
-            'playlists' => $playlists,
-            'categories' => $categories,
-            'nombreformation' => $nombreformations
+                    'playlists' => $playlists,
+                    'categories' => $categories,
+                    'nombreformation' => $nombreformations
         ]);
     }
 
+    /**
+     * Trie les playlists selon un critère donné.
+     *
+     * @param string $champ Champ de tri
+     * @param string $ordre Ordre de tri (ASC ou DESC)
+     *
+     * @return Response
+     */
     #[Route('/playlists/tri/{champ}/{ordre}', name: 'playlists.sort')]
-    public function sort($champ, $ordre): Response{
-        switch($champ){
+    public function sort($champ, $ordre): Response {
+        switch ($champ) {
             case "name":
                 $playlists = $this->playlistRepository->findAllOrderByName($ordre);
                 break;
             case "nombreformation":
-                $playlists = $this->playlistRepository->findAllOrderByNumberFormations($ordre);         
+                $playlists = $this->playlistRepository->findAllOrderByNumberFormations($ordre);
                 break;
             default:
-                $playlists = $this->playlistRepository->findAll();              
+                $playlists = $this->playlistRepository->findAll();
         }
         $nombreformations = $this->nbformations($playlists);
         $categories = $this->categorieRepository->findAll();
         return $this->render(self::LINKPLAYLIST, [
-            'playlists' => $playlists,
-            'categories' => $categories,
-            'nombreformation' => $nombreformations
+                    'playlists' => $playlists,
+                    'categories' => $categories,
+                    'nombreformation' => $nombreformations
         ]);
-    }          
+    }
 
+    /**
+     * Affiche les playlists avec l'outil de recherche
+     *
+     * @param string $champ Champ de recherche
+     * @param Request $request Requête HTTP
+     * @param string $table Table associée (catégories ici)
+     *
+     * @return Response
+     */
     #[Route('/playlists/recherche/{champ}/{table}', name: 'playlists.findallcontain')]
-    public function findAllContain($champ, Request $request, $table=""): Response{
+    public function findAllContain($champ, Request $request, $table = ""): Response {
         $valeur = $request->get("recherche");
         $playlists = $this->playlistRepository->findByContainValue($champ, $valeur, $table);
         $categories = $this->categorieRepository->findAll();
         $nombreformations = $this->nbformations($playlists);
         return $this->render(self::LINKPLAYLIST, [
-            'playlists' => $playlists,
-            'categories' => $categories,            
-            'valeur' => $valeur,
-            'table' => $table,
-            'nombreformation' => $nombreformations
+                    'playlists' => $playlists,
+                    'categories' => $categories,
+                    'valeur' => $valeur,
+                    'table' => $table,
+                    'nombreformation' => $nombreformations
         ]);
-    }  
+    }
 
+    /**
+     * Affiche les informations d'une playlist spécifique
+     *
+     * @param int $id Identifiant de la playlist
+     * @return Response
+     */
     #[Route('/playlists/playlist/{id}', name: 'playlists.showone')]
-    public function showOne($id): Response{
+    public function showOne($id): Response {
         $playlist = $this->playlistRepository->find($id);
         $playlistCategories = $this->categorieRepository->findAllForOnePlaylist($id);
         $playlistFormations = $this->formationRepository->findAllForOnePlaylist($id);
         return $this->render("pages/playlist.html.twig", [
-            'playlist' => $playlist,
-            'playlistcategories' => $playlistCategories,
-            'playlistformations' => $playlistFormations,
-            'nombreformation' => count($playlistFormations)
-        ]);        
-    }       
-    
+                    'playlist' => $playlist,
+                    'playlistcategories' => $playlistCategories,
+                    'playlistformations' => $playlistFormations,
+                    'nombreformation' => count($playlistFormations)
+        ]);
+    }
 }
