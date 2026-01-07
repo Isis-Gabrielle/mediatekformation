@@ -16,6 +16,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /home/projetsisis/www/mediatekformation
-            git pull origin main
+            git pull origin master
             composer install --no-dev --optimize-autoloader
             php bin/console cache:clear --env=prod
