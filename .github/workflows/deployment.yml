@@ -1,0 +1,21 @@
+on: push  
+name: Deploy website on push
+jobs:  
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get latest code
+        uses: actions/checkout@v4
+      
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ssh-projetsisis.alwaysdata.net
+          username: projetsisis
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /home/projetsisis/www/mediatekformation
+            git pull origin main
+            composer install --no-dev --optimize-autoloader
+            php bin/console cache:clear --env=prod
